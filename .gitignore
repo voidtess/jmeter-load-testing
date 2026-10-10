@@ -1,0 +1,9 @@
+# JMeter logs contain local usernames, machine names and IP addresses - never commit them
+*.log
+
+# Archives of the JMeter working folder contain that log
+*.rar
+*.zip
+*.7z
+
+.DS_Store
