@@ -4,14 +4,14 @@
 
 > Personal practice project against a public demo site. The results come from one run on one machine and are indicative only.
 
-## The 30-second version
+## Short version
 
 - **Load:** 250 users, 1,000 requests, a 5 min 41 s run.
 - **Result:** typical requests took about 0.3 s (median 297 ms) and 99.1% succeeded.
 - **Finding:** all 9 failures were connection timeouts, not application errors, and they came in a cluster in the middle of the run.
 - **Lesson:** the 456 ms *average* hides this. The median and the failure pattern tell you waht is real
 
-## Start here: a 2-minute tour
+## 2-minute tour to start
 
 | If you want to see | Open | What you will see |
 |---|---|---|
