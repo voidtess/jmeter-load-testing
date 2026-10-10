@@ -22,7 +22,7 @@
 
 The tree and the sample rows below show what is inside those files, so you can read the whole story here on
 
-## Results at a glance
+## Results
 
 Run with Apache JMeter 5.6.3 on Windows 11.
 
