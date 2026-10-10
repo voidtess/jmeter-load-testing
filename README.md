@@ -1,6 +1,6 @@
 # Load Testing a Flight-Booking Flow with Apache JMeter
 
-250 virtual users run a four-step ticket-booking journey against [BlazeDemo](https://blazedemo.com), a public demo travel site commonly used for load-testing practice. The project covers building the test plan, running it, and, most importantly, reading the results critically.
+250 virtual users run a four-step ticket-booking journey against [BlazeDemo](https://blazedemo.com), a public demo travel site commonly used for load-testing practice. The project covers building the test plan, running it, and reading the results critically.
 
 > Personal practice project against a public demo site. The results come from one run on one machine and are indicative only.
 
@@ -9,7 +9,7 @@
 - **Load:** 250 users, 1,000 requests, a 5 min 41 s run.
 - **Result:** typical requests took about 0.3 s (median 297 ms) and 99.1% succeeded.
 - **Finding:** all 9 failures were connection timeouts, not application errors, and they came in a cluster in the middle of the run.
-- **Lesson:** the 456 ms *average* hides this. The median and the failure pattern tell the real story.
+- **Lesson:** the 456 ms *average* hides this. The median and the failure pattern tell you waht is real
 
 ## Start here: a 2-minute tour
 
@@ -18,13 +18,13 @@
 | The headline numbers | [docs/dashboard-statistics.png](docs/dashboard-statistics.png) | JMeter's own dashboard: Apdex and the statistics table |
 | Every request on one chart | [docs/response-times-over-time.png](docs/response-times-over-time.png) | response time of all 1,000 requests, with the 9 failures marked |
 | How the test is built | [test-plan/BlazeDemo_Booking_Flow.jmx](test-plan/BlazeDemo_Booking_Flow.jmx) | the JMeter test plan (open it in JMeter: File → Open) |
-| The raw data | [results/BlazeDemo_run_2026-09-20.jtl](results/BlazeDemo_run_2026-09-20.jtl) | one line per request, readable in any text editor |
+| The raw data | [results/BlazeDemo_run.jtl](results/BlazeDemo_run_2026-09-20.jtl) | one line per request, readable in any text editor |
 
-The tree and the sample rows below show what is inside those files, so you can read the whole story right here.
+The tree and the sample rows below show what is inside those files, so you can read the whole story here on
 
 ## Results at a glance
 
-Run on 2026-09-20 with Apache JMeter 5.6.3 on Windows 11.
+Run with Apache JMeter 5.6.3 on Windows 11.
 
 | Metric | Value |
 |---|---|
@@ -38,7 +38,7 @@ Run on 2026-09-20 with Apache JMeter 5.6.3 on Windows 11.
 | Throughput | 2.94 requests/s (run average) |
 | Apdex (T = 500 ms, F = 1.5 s) | 0.983 |
 
-Percentiles and Apdex are as reported by JMeter's HTML dashboard; the other figures were recalculated from the raw results file and match it.
+Percentiles are as reported by JMeter's HTML dashboard
 
 ![JMeter dashboard: Apdex and statistics](docs/dashboard-statistics.png)
 
@@ -53,14 +53,14 @@ Percentiles and Apdex are as reported by JMeter's HTML dashboard; the other figu
 
 \* Labelled `Adding payment ifno` in the raw results.
 
-## What the data says
+## So, what the data means
 
 1. **Typical response times are healthy.** All 991 successful requests returned HTTP 200. 98.3 % of them (974) finished within 500 ms, and their average was 296 ms.
-2. **The 456 ms average is misleading.** It is pulled up by nine failed requests that each waited 14 to 19 seconds before giving up. The median and percentiles describe the user experience far better, a good reminder not to judge a load test by its average alone.
-3. **Every failure was a connection problem, not an application error.** All nine were `java.net.SocketException`s: seven connection attempts that timed out after about 19 s and two "connection reset" errors after about 14.5 s. The connect time equals the full elapsed time and latency is 0, so these requests never received a response. No request returned an HTTP 4xx or 5xx.
+2. **The 456 ms average is misleading.** It's pulled up by nine failed requests that each waited 14 to 19 seconds before giving up. The median and percentiles describe the user experience far better, a good reminder not to judge a load test by its average alone.
+3. **Every failure was a connection problem, not an application error.** All nine were `java.net.SocketException`s: seven connection attempts that timed out after about 19 s and two "connection reset" errors after about ~14s. The connect time equals the full elapsed time and latency is 0, so these requests never received a response. No request returned an HTTP 4xx or 5xx.
 4. **The failures were clustered, not random.** One happened at 24 s, as the ramp-up finished. The other eight started between 72 s and 125 s into the run: six on `purchase.php` and two on `confirmation.php`, while roughly 240 to 250 users were still active.
 5. **The cause cannot be determined from this data.** Connection timeouts could come from the demo site limiting connections, the network path, or the load generator itself. Isolating it would take a repeat run from another network or machine and a step-load test.
-6. **"250 users" is not "250 simultaneous requests".** Think times (10–40 s, then 30–150 s twice) mean the busiest 30-second window averaged about 10.7 requests/s (the initial burst) and the whole run only 2.94 requests/s. This tests 250 concurrent *sessions*, not a high-throughput stress scenario.
+6. **"250 users" is not "250 simultaneous requests".** Think times (10–40 s, then 30–150 s twice) mean the busiest 30-second window averaged about 10~ requests/s (the initial burst) and the whole run only 3~ requests/s. This tests 250 concurrent *sessions*, not a high-throughput stress test.
 
 ![Response time of every request over the run](docs/response-times-over-time.png)
 
@@ -81,9 +81,9 @@ Test Plan "blazemeter"
     └── Listener: Aggregate Report
 ```
 
-(The last transaction is named `Adding payment ifno` in the file; that typo is kept so the names match the recorded results.) Each virtual user walks through the four steps once, pausing between steps like a real person filling in a form (the pauses are Uniform Random Timers). The POST requests send fixed values: Boston → Berlin, one flight, dummy payment details.
+Each virtual user walks through the four steps once, pausing between steps like a real person filling in a form (the pauses are Uniform Random Timers). The POST requests send fixed values: Boston → Berlin, one flight, dummy payment details.
 
-## What the raw results look like
+## What the raw results are like
 
 Each line in the `.jtl` file is one request. Here are four of the 1,000 (columns shortened):
 
@@ -126,11 +126,10 @@ jmeter -g results/BlazeDemo_run_2026-09-20.jtl -o report/
 
 BlazeDemo is a shared public site, so please don't scale this plan up without a good reason.
 
-## Limitations and next steps
+## Limitations
 
-- **No content assertions.** Success is judged by HTTP status only. Add response assertions on page content (for example the booking confirmation text) and a duration assertion for a response-time target.
-- **Static test data.** Every user books the same route and flight with the same dummy card. Parameterise with a CSV Data Set Config.
-- **A single run.** Repeat it to check consistency, and try a step load (50 → 100 → 250 users) to find where errors begin.
+- **No content assertions.** Success is judged by HTTP status only.
+- **Static test data.** Every user books the same route and flight with the same dummy card.
 - **No server-side visibility.** As this is a third-party site, the cause of the connection failures stays unconfirmed.
 
 ## Author
